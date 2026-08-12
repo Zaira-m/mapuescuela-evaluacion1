@@ -1,4 +1,3 @@
-
 # Mapuescuela – Evaluación 1
 
 Proyecto desarrollado para la asignatura **Integración de Plataformas**, orientado al análisis y mejora del proceso de gestión de ventas de Mapuescuela.
@@ -17,6 +16,20 @@ En la carpeta `bpmn` se encuentran:
 - `mapuescuela-to-be.bpmn`: propuesta mejorada del proceso, incorporando automatización y optimización del flujo.
 
 El modelo TO-BE fue implementado y probado en Flowable mediante diferentes rutas del proceso.
+
+### Visualización de los modelos
+
+#### Modelo BPMN AS-IS
+
+El siguiente diagrama representa el proceso actual de gestión de ventas de Mapuescuela:
+
+![Modelo BPMN AS-IS](bpmn/mapuescuela-as-is.png)
+
+#### Modelo BPMN TO-BE
+
+El siguiente diagrama representa la propuesta de mejora y automatización del proceso:
+
+![Modelo BPMN TO-BE](bpmn/mapuescuela-to-be.png)
 
 ### Proceso ejecutable en Flowable
 
@@ -56,7 +69,7 @@ Los servicios fueron probados mediante **Postman**, obteniendo respuestas HTTP `
 
 ## Estructura del repositorio
 
-- `bpmn/`: modelos AS-IS y TO-BE.
+- `bpmn/`: modelos BPMN AS-IS y TO-BE, junto con sus respectivas imágenes para visualización.
 - `src/`: código fuente de la API REST.
 - `pom.xml`: configuración y dependencias del proyecto Maven.
 - `README.md`: documentación general del proyecto.
