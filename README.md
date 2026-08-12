@@ -70,7 +70,10 @@ Los servicios fueron probados mediante **Postman**, obteniendo respuestas HTTP `
 ## Estructura del repositorio
 
 - `bpmn/`: modelos BPMN AS-IS y TO-BE, junto con sus respectivas imágenes para visualización.
-- `src/`: código fuente de la API REST.
+- `src/`: código fuente de la API REST desarrollada con Java y Spring Boot.
+- `evidencias-flowable/`: capturas de la ejecución y validación del proceso TO-BE en Flowable Work.
+- `evidencias-api/`: evidencias de las pruebas realizadas a la API REST desde navegador y Postman, incluyendo solicitudes GET y POST con respuesta HTTP 200 OK.
+- `gestion-proyecto/`: documentación de seguimiento, organización y desarrollo individual del proyecto.
 - `pom.xml`: configuración y dependencias del proyecto Maven.
 - `README.md`: documentación general del proyecto.
 
