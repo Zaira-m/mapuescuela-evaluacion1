@@ -1,11 +1,13 @@
 package cl.mapuescuela.api;
 
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Singleton
 @Path("/api/inventario")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -25,7 +27,10 @@ public class InventarioController {
     public Map<String, Object> consultarStock(
             @PathParam("productoId") int productoId) {
 
-        int stock = stockPorProducto.getOrDefault(productoId, 0);
+        int stock = stockPorProducto.getOrDefault(
+                productoId,
+                0
+        );
 
         return Map.of(
                 "productoId", productoId,
@@ -39,8 +44,15 @@ public class InventarioController {
             @PathParam("productoId") int productoId,
             Map<String, Integer> datos) {
 
-        int cantidad = datos.getOrDefault("cantidad", 1);
-        int stockActual = stockPorProducto.getOrDefault(productoId, 0);
+        int cantidad = datos.getOrDefault(
+                "cantidad",
+                1
+        );
+
+        int stockActual = stockPorProducto.getOrDefault(
+                productoId,
+                0
+        );
 
         if (cantidad <= 0) {
             return Map.of(
@@ -59,7 +71,11 @@ public class InventarioController {
         }
 
         int nuevoStock = stockActual - cantidad;
-        stockPorProducto.put(productoId, nuevoStock);
+
+        stockPorProducto.put(
+                productoId,
+                nuevoStock
+        );
 
         return Map.of(
                 "mensaje", "Inventario actualizado correctamente",
