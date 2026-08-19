@@ -32,17 +32,23 @@
 		</dependency>
 
 		<!-- API REST con Spring Boot -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
-		</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webmvc</artifactId>
+</dependency>
 
-		<!-- Pruebas -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+<!-- Jakarta RESTful Web Services con Jersey -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jersey</artifactId>
+</dependency>
+
+<!-- Pruebas -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-webmvc-test</artifactId>
+    <scope>test</scope>
+</dependency>
 
 	</dependencies>
 

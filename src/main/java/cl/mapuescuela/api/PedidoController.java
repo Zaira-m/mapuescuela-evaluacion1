@@ -1,25 +1,25 @@
 package cl.mapuescuela.api;
 
-import org.springframework.web.bind.annotation.*;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RestController
-@RequestMapping("/api/pedidos")
+@Path("/api/pedidos")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class PedidoController {
 
-    // Pedidos guardados en memoria mientras la aplicación esté encendida
     private final Map<Integer, Map<String, Object>> pedidos =
             new ConcurrentHashMap<>();
 
-    // Generador automático de ID
     private final AtomicInteger contadorId = new AtomicInteger(123);
 
-    @PostMapping
+    @POST
     public Map<String, Object> registrarPedido(
-            @RequestBody Map<String, Object> nuevoPedido) {
+            Map<String, Object> nuevoPedido) {
 
         int idPedido = contadorId.getAndIncrement();
 
@@ -34,9 +34,10 @@ public class PedidoController {
         );
     }
 
-    @GetMapping("/{id}")
+    @GET
+    @Path("/{id}")
     public Map<String, Object> consultarPedido(
-            @PathVariable int id) {
+            @PathParam("id") int id) {
 
         Map<String, Object> pedido = pedidos.get(id);
 
@@ -50,9 +51,10 @@ public class PedidoController {
         return pedido;
     }
 
-    @PutMapping("/{id}/cancelar")
+    @PUT
+    @Path("/{id}/cancelar")
     public Map<String, Object> cancelarPedido(
-            @PathVariable int id) {
+            @PathParam("id") int id) {
 
         Map<String, Object> pedido = pedidos.get(id);
 
@@ -71,9 +73,10 @@ public class PedidoController {
         );
     }
 
-    @PutMapping("/{id}/pago-rechazado")
+    @PUT
+    @Path("/{id}/pago-rechazado")
     public Map<String, Object> registrarPagoRechazado(
-            @PathVariable int id) {
+            @PathParam("id") int id) {
 
         Map<String, Object> pedido = pedidos.get(id);
 
@@ -92,9 +95,10 @@ public class PedidoController {
         );
     }
 
-    @PutMapping("/{id}/disponible-retiro")
+    @PUT
+    @Path("/{id}/disponible-retiro")
     public Map<String, Object> registrarDisponibleRetiro(
-            @PathVariable int id) {
+            @PathParam("id") int id) {
 
         Map<String, Object> pedido = pedidos.get(id);
 
