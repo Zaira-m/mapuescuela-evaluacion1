@@ -23,7 +23,7 @@ En la carpeta `bpmn` se encuentran los modelos desarrollados para el proyecto:
 
 ## Proceso TO-BE en Flowable
 
-El proceso de gestión de ventas fue implementado en **Flowable Design** y publicado para su ejecución en **Flowable Work Sandbox**.
+El proceso de gestión de ventas fue implementado en **Flowable Design** y publicado para su ejecución y validación en un entorno **Flowable Work Trial**.
 
 El modelo considera:
 
@@ -51,12 +51,14 @@ Entre ellos:
 - Selección de productos.
 - Datos de compra.
 - Selección de modalidad de entrega.
+- Información de datos bancarios.
+- Transferencia y adjunto de comprobante de pago.
 - Revisión del comprobante de pago.
 - Selección del tipo de despacho.
 - Registro de retiro del pedido.
 - Registro de datos de envío.
 
-Los formularios permiten capturar variables utilizadas durante la ejecución del proceso BPMN.
+Los formularios permiten capturar variables utilizadas durante la ejecución del proceso BPMN y gestionar la interacción de los usuarios con las distintas etapas del flujo.
 
 ## External Workers
 
@@ -71,6 +73,8 @@ Se configuraron External Worker Tasks para los siguientes procesos:
 - `pedido-disponible-retiro`
 
 Los External Workers fueron desarrollados en Java para integrar el proceso BPMN con los servicios de la aplicación.
+
+La integración con Flowable se encuentra implementada y operativa mediante External Workers conectados con la API REST desarrollada en Spring Boot. Los cinco workers fueron probados durante la ejecución de las distintas rutas del proceso BPMN.
 
 ## API REST
 
@@ -170,20 +174,34 @@ Se validaron las siguientes rutas del proceso:
 
 Se validó la consulta de stock y su posterior actualización mediante el descuento de unidades.
 
+Las evidencias de estas pruebas se encuentran disponibles en la carpeta `evidencias-api/`.
+
 ## Ejecución en Flowable Work
 
-El proceso TO-BE fue publicado y ejecutado en **Flowable Work Sandbox**.
+El proceso TO-BE fue publicado y ejecutado en **Flowable Work Trial**.
 
-Se comprobó correctamente la ejecución de las tareas humanas iniciales y sus formularios:
+Se comprobó la ejecución completa del proceso de inicio a fin, incluyendo tareas humanas, formularios, gateways de decisión y tareas automáticas mediante External Workers.
 
-1. Seleccionar productos.
-2. Confirmar compra e ingresar datos.
-3. Seleccionar modalidad de entrega.
-4. Llegada a la tarea automática `Generar pedido`.
+Se validaron las principales rutas del proceso:
 
-Actualmente, la integración con la API de External Workers de la instancia académica se encuentra en revisión debido a una respuesta **HTTP 401 Unauthorized** al intentar adquirir los jobs desde el cliente Java.
+1. Pago aprobado con modalidad de retiro, finalizando en `Pedido retirado`.
+2. Pago aprobado con despacho mediante courier, finalizando en `Pedido despachado`.
+3. Pago aprobado con despacho mediante voluntario, finalizando en `Pedido despachado`.
+4. Pago rechazado, ejecutando el registro del rechazo y la cancelación del pedido.
 
-El proceso BPMN, los formularios, los servicios REST y las pruebas independientes de la API se mantienen funcionales.
+Durante estas ejecuciones se comprobó la integración de los External Workers:
+
+- `generar-pedido`
+- `actualizar-inventario`
+- `pedido-disponible-retiro`
+- `registrar-pago-rechazado`
+- `registrar-cancelacion`
+
+Los External Workers fueron ejecutados desde la aplicación Java/Spring Boot y permitieron que Flowable continuara automáticamente por las distintas etapas del proceso.
+
+También se comprobó el funcionamiento de los formularios asociados a las tareas humanas, incluyendo el ingreso de datos del cliente, modalidad de entrega, información bancaria, carga del comprobante de pago, revisión del pago, registro del retiro y datos de despacho.
+
+Las evidencias de estas ejecuciones se encuentran disponibles en la carpeta `evidencias-flowable/`.
 
 ## Tecnologías utilizadas
 
@@ -203,8 +221,8 @@ El proceso BPMN, los formularios, los servicios REST y las pruebas independiente
 
 - `bpmn/`: modelos BPMN AS-IS y TO-BE e imágenes de los diagramas.
 - `src/`: código fuente de la API REST y External Workers.
-- `evidencias-flowable/`: capturas de diseño, publicación y ejecución del proceso en Flowable.
-- `evidencias-api/`: evidencias de las pruebas realizadas mediante Postman.
+- `evidencias-flowable/`: capturas de diseño y ejecución del proceso en Flowable, formularios y External Workers.
+- `evidencias-api/`: evidencias de las pruebas de los servicios REST realizadas mediante Postman.
 - `gestion-proyecto/`: documentación de planificación, seguimiento y desarrollo individual.
 - `pom.xml`: configuración y dependencias Maven.
 - `README.md`: documentación general del proyecto.
@@ -213,12 +231,14 @@ El proceso BPMN, los formularios, los servicios REST y las pruebas independiente
 
 - Modelo BPMN AS-IS: completado.
 - Modelo BPMN TO-BE: completado.
-- Publicación en Flowable Sandbox: completada.
-- Formularios Flowable: implementados.
+- Publicación y ejecución en Flowable Work Trial: completada.
+- Formularios Flowable: implementados y probados.
 - API REST: implementada.
 - Pruebas Postman: realizadas.
-- External Workers: implementados.
-- Integración External Worker con Flowable Sandbox: pendiente de resolución de autenticación HTTP 401.
+- External Workers: implementados y probados.
+- Integración External Worker con Flowable: implementada y validada mediante la ejecución del proceso BPMN y su integración con la API REST en Spring Boot.
+- Rutas de retiro, despacho y cancelación: ejecutadas y validadas.
+- Evidencias de ejecución: incorporadas al repositorio.
 - Repositorio GitHub: actualizado.
 
 ## Autora
