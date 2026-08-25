@@ -42,6 +42,12 @@ El modelo considera:
 - Formularios asociados a tareas humanas.
 - Automatización mediante External Worker Tasks.
 
+### Respaldo ejecutable de Flowable
+
+El archivo `Mapuescuela.zip`, ubicado en la raíz del repositorio, corresponde a la exportación completa de la aplicación desde Flowable Design. Incluye el modelo BPMN, los formularios y la configuración necesaria para importar y publicar la aplicación en otro entorno Flowable.
+
+La integración fue ejecutada y validada en Flowable Work Trial. Para reproducirla, cada usuario debe importar la aplicación, publicarla y configurar su propio token mediante la variable de entorno `FLOWABLE_TOKEN`. Por seguridad, ningún token se almacena en el repositorio.
+
 ## Formularios
 
 Se implementaron formularios en Flowable para permitir la interacción del usuario con distintas etapas del proceso.
