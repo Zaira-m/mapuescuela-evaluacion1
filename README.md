@@ -77,10 +77,32 @@ Se configuraron External Worker Tasks para los siguientes procesos:
 - `registrar-pago-rechazado`
 - `registrar-cancelacion`
 - `pedido-disponible-retiro`
+- `registrar-pedido-retirado`
+- `registrar-pedido-despachado`
 
 Los External Workers fueron desarrollados en Java para integrar el proceso BPMN con los servicios de la aplicación.
 
-La integración con Flowable se encuentra implementada y operativa mediante External Workers conectados con la API REST desarrollada en Spring Boot. Los cinco workers fueron probados durante la ejecución de las distintas rutas del proceso BPMN.
+La integración con Flowable se encuentra implementada y operativa mediante External Workers conectados con la API REST desarrollada en Spring Boot. Los siete workers fueron probados durante la ejecución de las distintas rutas del proceso BPMN.
+
+## Interfaz web EVA3
+
+Se desarrolló una interfaz web independiente mediante HTML, CSS y JavaScript, integrada directamente con la API REST de Spring Boot.
+
+La interfaz permite:
+
+- Registrar pedidos.
+- Consultar pedidos por su identificador.
+- Aprobar o rechazar pagos.
+- Marcar pedidos disponibles para retiro.
+- Registrar retiros y despachos.
+- Cancelar pedidos.
+- Visualizar los datos y el estado actualizado.
+
+La interfaz se ejecuta localmente junto con Spring Boot y se encuentra disponible en:
+
+`http://localhost:8080/`
+
+Las evidencias de su funcionamiento se encuentran en la carpeta `evidencias-eva3/`.
 
 ## API REST
 
@@ -202,6 +224,8 @@ Durante estas ejecuciones se comprobó la integración de los External Workers:
 - `pedido-disponible-retiro`
 - `registrar-pago-rechazado`
 - `registrar-cancelacion`
+- `registrar-pedido-retirado`
+- `registrar-pedido-despachado`
 
 Los External Workers fueron ejecutados desde la aplicación Java/Spring Boot y permitieron que Flowable continuara automáticamente por las distintas etapas del proceso.
 
@@ -229,6 +253,7 @@ Las evidencias de estas ejecuciones se encuentran disponibles en la carpeta `evi
 - `src/`: código fuente de la API REST y External Workers.
 - `evidencias-flowable/`: capturas de diseño y ejecución del proceso en Flowable, formularios y External Workers.
 - `evidencias-api/`: evidencias de las pruebas de los servicios REST realizadas mediante Postman.
+- `evidencias-eva3/`: evidencias de las rutas integradas y del funcionamiento de la interfaz web.
 - `gestion-proyecto/`: documentación de planificación, seguimiento y desarrollo individual.
 - `pom.xml`: configuración y dependencias Maven.
 - `README.md`: documentación general del proyecto.
@@ -245,6 +270,8 @@ Las evidencias de estas ejecuciones se encuentran disponibles en la carpeta `evi
 - Integración External Worker con Flowable: implementada y validada mediante la ejecución del proceso BPMN y su integración con la API REST en Spring Boot.
 - Rutas de retiro, despacho y cancelación: ejecutadas y validadas.
 - Evidencias de ejecución: incorporadas al repositorio.
+- Interfaz web independiente: implementada y conectada con la API REST.
+- Exportación actualizada de Flowable: incorporada en `Mapuescuela.zip`.
 - Repositorio GitHub: actualizado.
 
 ## Autora
