@@ -101,3 +101,91 @@ Las evidencias del desarrollo se encuentran organizadas en el repositorio:
 - Documentación: actualizada.
 
 La Evaluación 2 queda funcionalmente implementada y documentada, manteniendo la estructura del proyecto preparada para continuar con las siguientes etapas de la asignatura.
+
+
+# Etapa 3 – Evaluación 3
+
+## Estado y seguimiento de la Evaluación 3
+
+La Evaluación 3 corresponde a la ampliación y consolidación de la solución Mapuescuela. El trabajo se realizó individualmente sobre la rama `main`, conservando las versiones anteriores mediante los tags `entrega-1` y `entrega-2`.
+
+### Actividades desarrolladas
+
+* Corrección de la propagación de la variable `idPedido` entre Flowable y la API REST.
+* Corrección de la variable `nombreCliente` utilizada por el proceso.
+* Eliminación del identificador fijo utilizado anteriormente por los External Workers.
+* Integración de las rutas de retiro y despacho con la API REST.
+* Incorporación de External Workers para registrar pedidos retirados y despachados.
+* Actualización y publicación del modelo BPMN en Flowable.
+* Desarrollo de una interfaz web independiente mediante HTML, CSS y JavaScript.
+* Conexión de la interfaz web con los servicios REST de Spring Boot.
+* Pruebas completas de las rutas de retiro, despacho por courier, despacho por voluntario y pago rechazado.
+* Registro de nuevas evidencias técnicas.
+* Exportación actualizada de la aplicación Flowable en `Mapuescuela.zip`.
+
+### External Workers incorporados
+
+Durante esta etapa se agregaron:
+
+* `registrar-pedido-retirado`
+* `registrar-pedido-despachado`
+
+En total, la solución cuenta con siete External Workers conectados con el proceso BPMN y los servicios REST.
+
+### Mejoras del proceso BPMN
+
+La ruta de retiro fue ampliada para registrar en la API cuando el pedido se encuentra disponible y cuando finalmente es retirado.
+
+Las alternativas de despacho por voluntario y courier convergen en la tarea automática `Registrar pedido despachado`, la cual actualiza el estado del pedido mediante la API antes de finalizar el proceso.
+
+### Interfaz web
+
+Se implementó una interfaz web independiente dentro de Spring Boot, disponible localmente en:
+
+`http://localhost:8080/`
+
+La interfaz permite:
+
+* Registrar un pedido.
+* Consultar un pedido mediante su identificador.
+* Aprobar o rechazar el pago.
+* Marcar el pedido como disponible para retiro.
+* Registrar el retiro.
+* Registrar el despacho.
+* Cancelar el pedido.
+* Visualizar la respuesta y el estado actualizado.
+
+La conexión con la API fue validada registrando un pedido desde la interfaz y actualizando su estado a `PAGO_APROBADO`.
+
+### Rutas validadas
+
+1. Pago aprobado → retiro → estado `RETIRADO`.
+2. Pago aprobado → despacho por voluntario → estado `DESPACHADO`.
+3. Pago aprobado → despacho por courier → estado `DESPACHADO`.
+4. Pago rechazado → cancelación → estado `CANCELADO`.
+
+En cada prueba se verificó que el mismo `idPedido` se propagara correctamente entre Flowable, los External Workers y la API REST.
+
+### Evidencias
+
+Las capturas correspondientes a esta etapa se encuentran en:
+
+* `evidencias-eva3/`
+
+Esta carpeta incluye evidencias de las rutas ejecutadas en Flowable, los resultados mostrados en la terminal y el funcionamiento de la interfaz web.
+
+### Estado actual
+
+* Propagación de `idPedido`: corregida y validada.
+* Integración de retiro: operativa.
+* Integración de despacho: operativa.
+* Ruta de pago rechazado y cancelación: operativa.
+* BPMN actualizado: publicado y exportado.
+* Interfaz web independiente: implementada y conectada.
+* Pruebas de compilación: finalizadas con `BUILD SUCCESS`.
+* Evidencias EVA3: incorporadas.
+* Repositorio GitHub: actualizado.
+* Exportación `Mapuescuela.zip`: actualizada.
+La solución queda funcionalmente ampliada y preparada para la revisión final de la Evaluación 3.
+
+
