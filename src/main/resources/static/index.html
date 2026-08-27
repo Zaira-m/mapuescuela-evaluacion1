@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mapuescuela - Gestión de pedidos</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6f4;
+            color: #24332a;
+        }
+
+        header {
+            background: #245c3b;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        main {
+            width: min(950px, 92%);
+            margin: 30px auto;
+            display: grid;
+            gap: 24px;
+        }
+
+        .tarjeta {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #245c3b;
+        }
+
+        .formulario {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #b8c5bc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 7px;
+            background: #245c3b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #19442b;
+        }
+
+        .botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .secundario {
+            background: #4f6f5b;
+        }
+
+        .advertencia {
+            background: #b05b29;
+        }
+
+        .peligro {
+            background: #a83b3b;
+        }
+
+        pre {
+            margin: 18px 0 0;
+            padding: 16px;
+            background: #eef3ef;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            min-height: 80px;
+        }
+
+        .mensaje {
+            margin-top: 14px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 650px) {
+            .formulario {
+                grid-template-columns: 1fr;
+            }
+
+            .campo-completo {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Mapuescuela</h1>
+    <p>Interfaz web para la gestión de pedidos</p>
+</header>
+
+<main>
+
+    <section class="tarjeta">
+        <h2>Registrar pedido</h2>
+
+        <form id="formPedido" class="formulario">
+
+            <div class="campo">
+                <label for="cliente">Nombre del cliente</label>
+                <input
+                    id="cliente"
+                    type="text"
+                    placeholder="Ingrese nombre del cliente"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="producto">Producto</label>
+                <input
+                    id="producto"
+                    type="text"
+                    placeholder="Ej.: Kit educativo"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="cantidad">Cantidad</label>
+                <input
+                    id="cantidad"
+                    type="number"
+                    min="1"
+                    value="1"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="modalidadEntrega">Modalidad de entrega</label>
+
+                <select id="modalidadEntrega" required>
+                    <option value="RETIRO">Retiro</option>
+                    <option value="DESPACHO">Despacho</option>
+                </select>
+            </div>
+
+            <div class="campo-completo">
+                <button type="submit">Registrar pedido</button>
+            </div>
+
+        </form>
+
+        <div id="mensajeRegistro" class="mensaje"></div>
+    </section>
+
+    <section class="tarjeta">
+        <h2>Consultar y actualizar pedido</h2>
+
+        <div class="campo">
+            <label for="idPedido">ID del pedido</label>
+            <input
+                id="idPedido"
+                type="number"
+                min="1"
+                placeholder="Ej.: 123"
+            >
+        </div>
+
+        <div class="botones">
+            <button type="button" onclick="consultarPedido()">
+                Consultar
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="actualizarEstado('pago-aprobado')"
+            >
+                Aprobar pago
+            </button>
+
+            <button
+                type="button"
+                class="advertencia"
+                onclick="actualizarEstado('pago-rechazado')"
+            >
+                Rechazar pago
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="actualizarEstado('disponible-retiro')"
+            >
+                Disponible para retiro
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="actualizarEstado('retirado')"
+            >
+                Registrar retiro
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="actualizarEstado('despachado')"
+            >
+                Registrar despacho
+            </button>
+
+            <button
+                type="button"
+                class="peligro"
+                onclick="actualizarEstado('cancelar')"
+            >
+                Cancelar pedido
+            </button>
+        </div>
+
+        <pre id="resultado">Aquí aparecerá la información del pedido.</pre>
+    </section>
+
+</main>
+
+<script>
+    const formPedido = document.getElementById("formPedido");
+    const resultado = document.getElementById("resultado");
+    const mensajeRegistro = document.getElementById("mensajeRegistro");
+
+    formPedido.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const pedido = {
+            cliente: document.getElementById("cliente").value,
+            producto: document.getElementById("producto").value,
+            cantidad: Number(document.getElementById("cantidad").value),
+            modalidadEntrega:
+                document.getElementById("modalidadEntrega").value
+        };
+
+        try {
+            const respuesta = await fetch("/api/pedidos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(pedido)
+            });
+
+            const datos = await respuesta.json();
+
+            mensajeRegistro.textContent =
+                datos.mensaje || "Pedido registrado correctamente.";
+
+            if (datos.pedido && datos.pedido.idPedido) {
+                document.getElementById("idPedido").value =
+                    datos.pedido.idPedido;
+            }
+
+            resultado.textContent =
+                JSON.stringify(datos, null, 2);
+
+        } catch (error) {
+            mensajeRegistro.textContent =
+                "No fue posible registrar el pedido.";
+
+            resultado.textContent =
+                "Error de conexión con la API.";
+        }
+    });
+
+    async function consultarPedido() {
+        const idPedido = obtenerIdPedido();
+
+        if (!idPedido) {
+            return;
+        }
+
+        try {
+            const respuesta =
+                await fetch(`/api/pedidos/${idPedido}`);
+
+            const datos = await respuesta.json();
+
+            resultado.textContent =
+                JSON.stringify(datos, null, 2);
+
+        } catch (error) {
+            resultado.textContent =
+                "No fue posible consultar el pedido.";
+        }
+    }
+
+    async function actualizarEstado(accion) {
+        const idPedido = obtenerIdPedido();
+
+        if (!idPedido) {
+            return;
+        }
+
+        try {
+            const respuesta = await fetch(
+                `/api/pedidos/${idPedido}/${accion}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const datos = await respuesta.json();
+
+            resultado.textContent =
+                JSON.stringify(datos, null, 2);
+
+        } catch (error) {
+            resultado.textContent =
+                "No fue posible actualizar el pedido.";
+        }
+    }
+
+    function obtenerIdPedido() {
+        const idPedido =
+            document.getElementById("idPedido").value;
+
+        if (!idPedido) {
+            resultado.textContent =
+                "Ingresa el ID del pedido.";
+
+            return null;
+        }
+
+        return idPedido;
+    }
+</script>
+
+</body>
+</html>
