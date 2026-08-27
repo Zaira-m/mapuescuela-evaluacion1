@@ -30,27 +30,38 @@ public class GenerarPedidoWorker {
         System.out.println("Job ID: " + job.getId());
 
         Map<String, Object> variables = job.getVariables();
-
         Map<String, Object> nuevoPedido = new HashMap<>();
 
         nuevoPedido.put(
                 "cliente",
-                variables.getOrDefault("cliente", "Cliente Mapuescuela")
+                variables.getOrDefault(
+                        "nombreCliente",
+                        "Cliente Mapuescuela"
+                )
         );
 
         nuevoPedido.put(
                 "producto",
-                variables.getOrDefault("producto", "Producto Mapuescuela")
+                variables.getOrDefault(
+                        "producto",
+                        "Producto Mapuescuela"
+                )
         );
 
         nuevoPedido.put(
                 "cantidad",
-                variables.getOrDefault("cantidad", 1)
+                variables.getOrDefault(
+                        "cantidad",
+                        1
+                )
         );
 
         nuevoPedido.put(
                 "modalidadEntrega",
-                variables.getOrDefault("modalidadEntrega", "RETIRO")
+                variables.getOrDefault(
+                        "modalidadEntrega",
+                        "RETIRO"
+                )
         );
 
         Map<?, ?> respuesta = restClient.post()
@@ -59,9 +70,18 @@ public class GenerarPedidoWorker {
                 .retrieve()
                 .body(Map.class);
 
-        System.out.println("Pedido generado correctamente: " + respuesta);
+        System.out.println(
+                "Pedido generado correctamente: " + respuesta
+        );
+
+        Map<?, ?> pedidoRespuesta =
+                (Map<?, ?>) respuesta.get("pedido");
+
+        Object idPedido =
+                pedidoRespuesta.get("idPedido");
 
         return resultBuilder.success()
-                .variable("pedidoGenerado", true);
+                .variable("pedidoGenerado", true)
+                .variable("idPedido", String.valueOf(idPedido));
     }
 }

@@ -10,38 +10,42 @@ import org.springframework.web.client.RestClient;
 import java.util.Map;
 
 @Component
-public class RegistrarCancelacionWorker {
+public class RegistrarPedidoDespachadoWorker {
 
     private final RestClient restClient;
 
-    public RegistrarCancelacionWorker() {
+    public RegistrarPedidoDespachadoWorker() {
         this.restClient = RestClient.builder()
                 .baseUrl("http://localhost:8080")
                 .build();
     }
 
-    @FlowableWorker(topic = "registrar-cancelacion")
-    public WorkerResult registrarCancelacion(
+    @FlowableWorker(topic = "registrar-pedido-despachado")
+    public WorkerResult registrarPedidoDespachado(
             AcquiredExternalWorkerJob job,
             WorkerResultBuilder resultBuilder) {
 
-        System.out.println("External Worker registrar-cancelacion ejecutándose");
+        System.out.println(
+                "External Worker registrar-pedido-despachado ejecutándose"
+        );
         System.out.println("Job ID: " + job.getId());
 
         Map<String, Object> variables = job.getVariables();
 
-       int idPedido = Integer.parseInt(
-        String.valueOf(variables.get("idPedido"))
-);
+        int idPedido = Integer.parseInt(
+                String.valueOf(variables.get("idPedido"))
+        );
 
         Map<?, ?> respuesta = restClient.put()
-                .uri("/api/pedidos/{id}/cancelar", idPedido)
+                .uri("/api/pedidos/{id}/despachado", idPedido)
                 .retrieve()
                 .body(Map.class);
 
-        System.out.println("Pedido cancelado: " + respuesta);
+        System.out.println(
+                "Pedido despachado registrado: " + respuesta
+        );
 
         return resultBuilder.success()
-                .variable("pedidoCancelado", true);
+                .variable("pedidoDespachadoRegistrado", true);
     }
 }

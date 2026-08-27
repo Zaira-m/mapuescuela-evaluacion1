@@ -30,11 +30,9 @@ public class RegistrarPagoRechazadoWorker {
 
         Map<String, Object> variables = job.getVariables();
 
-        int idPedido = 123;
-
-        if (variables.get("idPedido") instanceof Number numeroPedido) {
-            idPedido = numeroPedido.intValue();
-        }
+        int idPedido = Integer.parseInt(
+        String.valueOf(variables.get("idPedido"))
+);
 
         Map<?, ?> respuesta = restClient.put()
                 .uri("/api/pedidos/{id}/pago-rechazado", idPedido)
