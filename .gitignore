@@ -36,3 +36,6 @@ build/
 .env.*
 application-local.properties
 *.secret
+
+### Base de datos local H2 ###
+data/
