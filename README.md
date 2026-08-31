@@ -1,178 +1,161 @@
-# Mapuescuela – Integración de Plataformas
+﻿# Mapuescuela - Integración de Plataformas
 
-Proyecto desarrollado para la asignatura **Integración de Plataformas**, orientado al análisis, mejora, automatización e integración del proceso de gestión de ventas de Mapuescuela.
+Producto Mínimo Viable desarrollado para la asignatura **Integración de Plataformas**. La solución digitaliza la gestión de ventas de Mapuescuela mediante una interfaz web, servicios REST, persistencia H2 y un proceso BPMN ejecutable en Flowable.
 
-## Objetivo
+## Valor del producto
 
-Modelar el proceso actual de gestión de ventas de Mapuescuela mediante BPMN, diseñar una propuesta mejorada TO-BE e implementar un prototipo ejecutable utilizando **Flowable**, formularios de usuario, External Workers y servicios web REST desarrollados con Java y Spring Boot.
+Mapuescuela permite centralizar las principales operaciones del negocio:
 
-## Modelos BPMN
-
-En la carpeta `bpmn` se encuentran los modelos desarrollados para el proyecto:
-
-- `mapuescuela-as-is.bpmn`: representación del proceso actual de gestión de ventas.
-- `mapuescuela-to-be.bpmn`: propuesta mejorada del proceso, incorporando automatización e integración con servicios externos.
-
-### Modelo BPMN AS-IS
-
-![Modelo BPMN AS-IS](bpmn/mapuescuela-as-is.png)
-
-### Modelo BPMN TO-BE
-
-![Modelo BPMN TO-BE](bpmn/mapuescuela-to-be.png)
-
-## Proceso TO-BE en Flowable
-
-El proceso de gestión de ventas fue implementado en **Flowable Design** y publicado para su ejecución y validación en un entorno **Flowable Work Trial**.
-
-El modelo considera:
-
-- Selección de productos.
-- Ingreso de datos del cliente.
-- Selección de modalidad de entrega.
-- Generación del pedido.
-- Información de datos bancarios.
-- Transferencia y comprobante de pago.
-- Revisión y aprobación/rechazo del pago.
-- Actualización de inventario.
-- Preparación del pedido.
-- Retiro o despacho.
-- Cancelación de pedidos.
-- Evento temporizador para cancelación por tiempo.
-- Formularios asociados a tareas humanas.
-- Automatización mediante External Worker Tasks.
-
-### Respaldo ejecutable de Flowable
-
-El archivo `Mapuescuela.zip`, ubicado en la raíz del repositorio, corresponde a la exportación completa de la aplicación desde Flowable Design. Incluye el modelo BPMN, los formularios y la configuración necesaria para importar y publicar la aplicación en otro entorno Flowable.
-
-La integración fue ejecutada y validada en Flowable Work Trial. Para reproducirla, cada usuario debe importar la aplicación, publicarla y configurar su propio token mediante la variable de entorno `FLOWABLE_TOKEN`. Por seguridad, ningún token se almacena en el repositorio.
-
-## Formularios
-
-Se implementaron formularios en Flowable para permitir la interacción del usuario con distintas etapas del proceso.
-
-Entre ellos:
-
-- Selección de productos.
-- Datos de compra.
-- Selección de modalidad de entrega.
-- Información de datos bancarios.
-- Transferencia y adjunto de comprobante de pago.
-- Revisión del comprobante de pago.
-- Selección del tipo de despacho.
-- Registro de retiro del pedido.
-- Registro de datos de envío.
-
-Los formularios permiten capturar variables utilizadas durante la ejecución del proceso BPMN y gestionar la interacción de los usuarios con las distintas etapas del flujo.
-
-## External Workers
-
-El modelo TO-BE diferencia las tareas humanas de las tareas automáticas.
-
-Se configuraron External Worker Tasks para los siguientes procesos:
-
-- `generar-pedido`
-- `actualizar-inventario`
-- `registrar-pago-rechazado`
-- `registrar-cancelacion`
-- `pedido-disponible-retiro`
-- `registrar-pedido-retirado`
-- `registrar-pedido-despachado`
-
-Los External Workers fueron desarrollados en Java para integrar el proceso BPMN con los servicios de la aplicación.
-
-La integración con Flowable se encuentra implementada y operativa mediante External Workers conectados con la API REST desarrollada en Spring Boot. Los siete workers fueron probados durante la ejecución de las distintas rutas del proceso BPMN.
-
-## Interfaz web EVA3
-
-Se desarrolló una interfaz web independiente mediante HTML, CSS y JavaScript, integrada directamente con la API REST de Spring Boot.
-
-La interfaz permite:
-
-- Registrar pedidos.
-- Consultar pedidos por su identificador.
+- Registrar y consultar pedidos.
 - Aprobar o rechazar pagos.
-- Marcar pedidos disponibles para retiro.
-- Registrar retiros y despachos.
-- Cancelar pedidos.
-- Visualizar los datos y el estado actualizado.
+- Preparar pedidos para retiro o despacho.
+- Registrar retiros, despachos y cancelaciones.
+- Consultar y descontar inventario.
+- Conservar pedidos y stock después de reiniciar la aplicación.
+- Coordinar el proceso de negocio mediante BPMN y External Workers.
 
-La interfaz se ejecuta localmente junto con Spring Boot y se encuentra disponible en:
+## Arquitectura
 
-`http://localhost:8080/`
+La solución se compone de:
 
-Las evidencias de su funcionamiento se encuentran en la carpeta `evidencias-eva3/`.
+1. **Interfaz web:** HTML, CSS y JavaScript servidos por Spring Boot.
+2. **API REST:** servicios Java para pedidos e inventario.
+3. **Base de datos:** H2 persistente en archivo mediante Spring Data JPA.
+4. **Proceso BPMN:** modelo TO-BE desplegado y ejecutado en Flowable.
+5. **External Workers:** integración entre las tareas automáticas del BPMN y la API REST.
+
+## Requisitos
+
+- Java 21.
+- Git.
+- Windows PowerShell o una terminal equivalente.
+- Docker Desktop, solo para ejecutar Flowable Open Source localmente.
+
+No es necesario instalar Maven: el repositorio incluye Maven Wrapper.
+
+## Instalación y ejecución del MVP
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/Zaira-m/mapuescuela-evaluacion1.git
+cd mapuescuela-evaluacion1
+git checkout examen
+```
+
+### 2. Ejecutar las pruebas
+
+En Windows:
+
+```powershell
+.\mvnw.cmd test
+```
+
+En Linux o macOS:
+
+```bash
+./mvnw test
+```
+
+El resultado esperado es `BUILD SUCCESS`.
+
+### 3. Iniciar la aplicación
+
+En Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+En Linux o macOS:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Cuando la terminal muestre `Started MapuescuelaApiApplication`, abrir:
+
+```text
+http://localhost:8080
+```
+
+## Interfaz web
+
+La interfaz fue diseñada para la operación cotidiana de la emprendedora. Presenta estados y resultados en tarjetas legibles, sin exponer el JSON técnico de la API.
+
+Incluye tres secciones:
+
+### Registrar pedido
+
+- Nombre del cliente.
+- Producto.
+- Cantidad.
+- Modalidad de entrega: retiro o despacho.
+
+### Consultar y actualizar pedido
+
+- Consultar por ID.
+- Aprobar o rechazar el pago.
+- Marcar como disponible para retiro.
+- Registrar retiro o despacho.
+- Cancelar el pedido.
+
+### Gestionar inventario
+
+- Consultar stock por producto.
+- Descontar unidades.
+- Informar stock insuficiente o cantidades inválidas.
+
+## Persistencia H2
+
+Pedidos e inventario se almacenan mediante **Spring Data JPA** en una base H2 persistente:
+
+```text
+jdbc:h2:file:./data/mapuescuela
+```
+
+Hibernate actualiza automáticamente el esquema y la carpeta local `data/` está excluida de Git. Esto evita publicar datos de ejecución y permite conservar la información después de detener y reiniciar Spring Boot.
+
+Al iniciar por primera vez, el inventario incorpora los siguientes valores si todavía no existen:
+
+- Producto 1: 10 unidades.
+- Producto 2: 5 unidades.
+- Producto 3: 8 unidades.
 
 ## API REST
 
-Se desarrolló una API REST utilizando **Java 21 y Spring Boot** para gestionar pedidos e inventario.
-
 ### Pedidos
 
-#### Registrar pedido
+| Método | Ruta | Operación |
+|---|---|---|
+| `POST` | `/api/pedidos` | Registrar pedido |
+| `GET` | `/api/pedidos/{id}` | Consultar pedido |
+| `PUT` | `/api/pedidos/{id}/pago-aprobado` | Aprobar pago |
+| `PUT` | `/api/pedidos/{id}/pago-rechazado` | Rechazar pago |
+| `PUT` | `/api/pedidos/{id}/disponible-retiro` | Marcar disponible para retiro |
+| `PUT` | `/api/pedidos/{id}/retirado` | Registrar retiro |
+| `PUT` | `/api/pedidos/{id}/despachado` | Registrar despacho |
+| `PUT` | `/api/pedidos/{id}/cancelar` | Cancelar pedido |
 
-`POST /api/pedidos`
+Ejemplo de registro:
 
-Permite crear un nuevo pedido con estado inicial `PENDIENTE`.
+```json
+{
+  "cliente": "Cliente de prueba",
+  "producto": "Kit educativo",
+  "cantidad": 2,
+  "modalidadEntrega": "RETIRO"
+}
+```
 
-#### Consultar pedido
+### Inventario
 
-`GET /api/pedidos/{id}`
+| Método | Ruta | Operación |
+|---|---|---|
+| `GET` | `/api/inventario/{productoId}` | Consultar stock |
+| `PUT` | `/api/inventario/{productoId}/descontar` | Descontar stock |
 
-Permite consultar los datos y estado actual de un pedido.
-
-#### Registrar pago aprobado
-
-`PUT /api/pedidos/{id}/pago-aprobado`
-
-Actualiza el estado del pedido a `PAGO_APROBADO`.
-
-#### Registrar pago rechazado
-
-`PUT /api/pedidos/{id}/pago-rechazado`
-
-Actualiza el estado del pedido a `PAGO_RECHAZADO`.
-
-#### Cancelar pedido
-
-`PUT /api/pedidos/{id}/cancelar`
-
-Actualiza el estado del pedido a `CANCELADO`.
-
-#### Pedido disponible para retiro
-
-`PUT /api/pedidos/{id}/disponible-retiro`
-
-Actualiza el estado del pedido a `DISPONIBLE_RETIRO`.
-
-#### Registrar retiro
-
-`PUT /api/pedidos/{id}/retirado`
-
-Actualiza el estado del pedido a `RETIRADO`.
-
-#### Registrar despacho
-
-`PUT /api/pedidos/{id}/despachado`
-
-Actualiza el estado del pedido a `DESPACHADO`.
-
-## Inventario
-
-### Consultar stock
-
-`GET /api/inventario/{productoId}`
-
-Permite consultar el stock disponible de un producto.
-
-### Descontar stock
-
-`PUT /api/inventario/{productoId}/descontar`
-
-Permite descontar una cantidad determinada del inventario.
-
-Ejemplo de solicitud:
+Ejemplo de descuento:
 
 ```json
 {
@@ -180,99 +163,188 @@ Ejemplo de solicitud:
 }
 ```
 
-## Pruebas realizadas
+## Modelos BPMN
 
-Los servicios REST fueron probados mediante **Postman**.
+La carpeta `bpmn/` contiene:
 
-Se validaron las siguientes rutas del proceso:
+- `mapuescuela-as-is.bpmn`: proceso original.
+- `mapuescuela-to-be.bpmn`: proceso mejorado y automatizado.
+- Imágenes PNG de ambos diagramas.
 
-### Pago aprobado y retiro
+### Modelo AS-IS
 
-`PENDIENTE → PAGO_APROBADO → DISPONIBLE_RETIRO → RETIRADO`
+![Modelo BPMN AS-IS](bpmn/mapuescuela-as-is.png)
 
-### Pago rechazado y cancelación
+### Modelo TO-BE
 
-`PENDIENTE → PAGO_RECHAZADO → CANCELADO`
+![Modelo BPMN TO-BE](bpmn/mapuescuela-to-be.png)
 
-### Pago aprobado y despacho
+El modelo TO-BE contempla tareas humanas, compuertas, temporizador de cancelación, retiro, despacho y tareas automáticas.
 
-`PENDIENTE → PAGO_APROBADO → DESPACHADO`
+## External Workers
 
-### Inventario
-
-Se validó la consulta de stock y su posterior actualización mediante el descuento de unidades.
-
-Las evidencias de estas pruebas se encuentran disponibles en la carpeta `evidencias-api/`.
-
-## Ejecución en Flowable Work
-
-El proceso TO-BE fue publicado y ejecutado en **Flowable Work Trial**.
-
-Se comprobó la ejecución completa del proceso de inicio a fin, incluyendo tareas humanas, formularios, gateways de decisión y tareas automáticas mediante External Workers.
-
-Se validaron las principales rutas del proceso:
-
-1. Pago aprobado con modalidad de retiro, finalizando en `Pedido retirado`.
-2. Pago aprobado con despacho mediante courier, finalizando en `Pedido despachado`.
-3. Pago aprobado con despacho mediante voluntario, finalizando en `Pedido despachado`.
-4. Pago rechazado, ejecutando el registro del rechazo y la cancelación del pedido.
-
-Durante estas ejecuciones se comprobó la integración de los External Workers:
+Los trabajadores externos desarrollados en Java conectan el BPMN con la API REST:
 
 - `generar-pedido`
 - `actualizar-inventario`
-- `pedido-disponible-retiro`
 - `registrar-pago-rechazado`
 - `registrar-cancelacion`
+- `pedido-disponible-retiro`
 - `registrar-pedido-retirado`
 - `registrar-pedido-despachado`
 
-Los External Workers fueron ejecutados desde la aplicación Java/Spring Boot y permitieron que Flowable continuara automáticamente por las distintas etapas del proceso.
+Ningún token se almacena en el repositorio. Para reproducir la integración con Flowable Work Trial se debe configurar un token propio:
 
-También se comprobó el funcionamiento de los formularios asociados a las tareas humanas, incluyendo el ingreso de datos del cliente, modalidad de entrega, información bancaria, carga del comprobante de pago, revisión del pago, registro del retiro y datos de despacho.
+```powershell
+$env:FLOWABLE_TOKEN="TOKEN_PERSONAL"
+.\mvnw.cmd spring-boot:run
+```
 
-Las evidencias de estas ejecuciones se encuentran disponibles en la carpeta `evidencias-flowable/`.
+## Ejecución en Flowable Work Trial
+
+El proceso se ejecutó de principio a fin en Flowable Work Trial, integrando formularios, tareas humanas, compuertas y External Workers.
+
+Rutas validadas:
+
+1. Pago aprobado con retiro.
+2. Pago aprobado con despacho por courier.
+3. Pago aprobado con despacho por voluntario.
+4. Pago rechazado y cancelación.
+5. Cancelación automática mediante temporizador.
+
+El archivo `Mapuescuela.zip` corresponde al respaldo exportado desde Flowable e incluye el modelo y los formularios utilizados en Trial.
+
+## Flowable Open Source con Docker
+
+También se validó el BPMN en **Flowable Open Source 6.8.0**.
+
+### Iniciar Flowable
+
+```powershell
+docker run -d --name flowable-open-source -p 8081:8080 flowable/flowable-ui:6.8.0
+```
+
+Abrir:
+
+```text
+http://localhost:8081/flowable-ui
+```
+
+Credenciales predeterminadas del entorno local utilizado:
+
+```text
+Usuario: admin
+Contraseña: test
+```
+
+En Open Source se comprobó:
+
+- Importación del BPMN TO-BE.
+- Validación `No errors detected`.
+- Creación y publicación de la aplicación Mapuescuela.
+- Registro de la definición en el motor.
+- Inicio de una instancia.
+- Creación y avance de tareas humanas.
+- Reconocimiento de `Generar pedido` como `externalWorkerServiceTask`.
+
+La imagen `flowable/flowable-ui:6.8.0` utilizada no incorpora el módulo REST independiente `external-job-api`. Por ese motivo, la demostración integral de los siete workers se conserva en Flowable Work Trial, mientras Open Source respalda la portabilidad, validación y ejecución del BPMN en un motor local.
+
+### Detener y volver a iniciar Flowable
+
+```powershell
+docker stop flowable-open-source
+docker start flowable-open-source
+```
+
+## Pruebas realizadas
+
+- Compilación y prueba de contexto con Maven: `BUILD SUCCESS`.
+- Registro y consulta de pedidos.
+- Pago aprobado, rechazo y cancelación.
+- Retiro y despacho.
+- Consulta y descuento de inventario.
+- Persistencia de pedidos después del reinicio.
+- Persistencia del inventario después del reinicio.
+- Validación y publicación del BPMN en Flowable Open Source.
+- Ejecuciones integrales con External Workers en Flowable Work Trial.
+
+Ejemplo de ruta validada desde la interfaz:
+
+```text
+Pendiente -> Pago aprobado -> Disponible para retiro -> Retirado
+```
+
+## Evidencias
+
+- `evidencias-api/`: pruebas de los servicios REST.
+- `evidencias-flowable/`: formularios y ejecuciones en Flowable Work Trial.
+- `evidencias-eva3/`: integración, rutas completas e interfaz de EVA3.
+- `evidencias-examen/`: H2, inventario, interfaz pulida y Flowable Open Source.
 
 ## Tecnologías utilizadas
 
-- BPMN 2.0
-- Flowable Design
-- Flowable Work
-- Flowable Inspect
-- Java 21
-- Spring Boot
-- Jakarta REST
-- Maven
-- Postman
-- Git
-- GitHub
+- Java 21.
+- Spring Boot 4.1.0.
+- Spring Data JPA.
+- H2 Database.
+- Jakarta REST.
+- HTML5, CSS3 y JavaScript.
+- BPMN 2.0.
+- Flowable Work Trial.
+- Flowable Open Source 6.8.0.
+- Docker Desktop y WSL 2.
+- Maven Wrapper.
+- Postman.
+- Git y GitHub.
+- IA generativa como apoyo para revisión, depuración, documentación y mejora de la experiencia de usuario.
 
 ## Estructura del repositorio
 
-- `bpmn/`: modelos BPMN AS-IS y TO-BE e imágenes de los diagramas.
-- `src/`: código fuente de la API REST y External Workers.
-- `evidencias-flowable/`: capturas de diseño y ejecución del proceso en Flowable, formularios y External Workers.
-- `evidencias-api/`: evidencias de las pruebas de los servicios REST realizadas mediante Postman.
-- `evidencias-eva3/`: evidencias de las rutas integradas y del funcionamiento de la interfaz web.
-- `gestion-proyecto/`: documentación de planificación, seguimiento y desarrollo individual.
-- `pom.xml`: configuración y dependencias Maven.
-- `README.md`: documentación general del proyecto.
+```text
+bpmn/                   Modelos BPMN e imágenes
+evidencias-api/         Pruebas de servicios REST
+evidencias-flowable/    Ejecuciones en Flowable Work Trial
+evidencias-eva3/        Evidencias de la tercera evaluación
+evidencias-examen/      Persistencia, interfaz y Open Source
+gestion-proyecto/       Planificación y seguimiento
+src/main/java/          API, modelos, repositorios y workers
+src/main/resources/     Configuración e interfaz web
+Mapuescuela.zip          Exportación de Flowable
+pom.xml                  Dependencias y compilación
+```
 
-## Estado actual del proyecto
+## Uso de IA y tecnologías complementarias
 
-- Modelo BPMN AS-IS: completado.
-- Modelo BPMN TO-BE: completado.
-- Publicación y ejecución en Flowable Work Trial: completada.
-- Formularios Flowable: implementados y probados.
-- API REST: implementada.
-- Pruebas Postman: realizadas.
-- External Workers: implementados y probados.
-- Integración External Worker con Flowable: implementada y validada mediante la ejecución del proceso BPMN y su integración con la API REST en Spring Boot.
-- Rutas de retiro, despacho y cancelación: ejecutadas y validadas.
-- Evidencias de ejecución: incorporadas al repositorio.
-- Interfaz web independiente: implementada y conectada con la API REST.
-- Exportación actualizada de Flowable: incorporada en `Mapuescuela.zip`.
-- Repositorio GitHub: actualizado.
+Durante el desarrollo se utilizó IA generativa como herramienta de apoyo para:
+
+- Revisar la arquitectura y detectar inconsistencias entre variables BPMN.
+- Depurar la integración de External Workers.
+- Mejorar validaciones y tratamiento de errores.
+- Migrar pedidos e inventario desde memoria a persistencia JPA/H2.
+- Diseñar una interfaz web más clara para la emprendedora.
+- Estructurar pruebas, evidencias y documentación técnica.
+
+Todas las decisiones fueron verificadas mediante compilación, pruebas REST y ejecuciones reales del proceso.
+
+## Seguridad
+
+- Los tokens se configuran mediante variables de entorno.
+- `.env`, archivos locales y secretos están excluidos por `.gitignore`.
+- La base H2 generada localmente no se publica.
+- No existen credenciales personales en el repositorio.
+
+## Estado del proyecto
+
+- MVP funcional: completado.
+- Interfaz web pulida: completada.
+- API REST: completada.
+- Persistencia H2 para pedidos e inventario: completada.
+- BPMN AS-IS y TO-BE: completados.
+- Formularios Flowable: completados.
+- Siete External Workers: implementados y probados.
+- Ejecución integral en Flowable Work Trial: completada.
+- Validación y ejecución en Flowable Open Source: completada.
+- Evidencias del examen: incorporadas.
 
 ## Autora
 
