@@ -77,6 +77,12 @@
             font-size: 15px;
         }
 
+        input:focus,
+        select:focus {
+            outline: 2px solid #79a88a;
+            border-color: #245c3b;
+        }
+
         button {
             padding: 11px 16px;
             border: none;
@@ -183,7 +189,9 @@
             </div>
 
             <div class="campo">
-                <label for="modalidadEntrega">Modalidad de entrega</label>
+                <label for="modalidadEntrega">
+                    Modalidad de entrega
+                </label>
 
                 <select id="modalidadEntrega" required>
                     <option value="RETIRO">Retiro</option>
@@ -192,12 +200,18 @@
             </div>
 
             <div class="campo-completo">
-                <button type="submit">Registrar pedido</button>
+                <button type="submit">
+                    Registrar pedido
+                </button>
             </div>
 
         </form>
 
-        <div id="mensajeRegistro" class="mensaje"></div>
+        <div
+            id="mensajeRegistro"
+            class="mensaje"
+            aria-live="polite"
+        ></div>
     </section>
 
     <section class="tarjeta">
@@ -209,12 +223,15 @@
                 id="idPedido"
                 type="number"
                 min="1"
-                placeholder="Ej.: 123"
+                placeholder="Ej.: 1"
             >
         </div>
 
         <div class="botones">
-            <button type="button" onclick="consultarPedido()">
+            <button
+                type="button"
+                onclick="consultarPedido()"
+            >
                 Consultar
             </button>
 
@@ -267,57 +284,156 @@
             </button>
         </div>
 
-        <pre id="resultado">Aquí aparecerá la información del pedido.</pre>
+        <pre id="resultado" aria-live="polite">Aquí aparecerá la información del pedido.</pre>
+    </section>
+
+    <section class="tarjeta">
+        <h2>Gestionar inventario</h2>
+
+        <div class="formulario">
+            <div class="campo">
+                <label for="productoIdInventario">
+                    ID del producto
+                </label>
+
+                <input
+                    id="productoIdInventario"
+                    type="number"
+                    min="1"
+                    value="1"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="cantidadInventario">
+                    Cantidad a descontar
+                </label>
+
+                <input
+                    id="cantidadInventario"
+                    type="number"
+                    min="1"
+                    value="1"
+                    required
+                >
+            </div>
+        </div>
+
+        <div class="botones">
+            <button
+                type="button"
+                onclick="consultarInventario()"
+            >
+                Consultar stock
+            </button>
+
+            <button
+                type="button"
+                class="secundario"
+                onclick="descontarInventario()"
+            >
+                Descontar stock
+            </button>
+        </div>
+
+        <pre
+            id="resultadoInventario"
+            aria-live="polite"
+        >Aquí aparecerá la información del inventario.</pre>
     </section>
 
 </main>
 
 <script>
-    const formPedido = document.getElementById("formPedido");
-    const resultado = document.getElementById("resultado");
-    const mensajeRegistro = document.getElementById("mensajeRegistro");
+    const formPedido =
+        document.getElementById("formPedido");
 
-    formPedido.addEventListener("submit", async function (event) {
-        event.preventDefault();
+    const resultado =
+        document.getElementById("resultado");
 
-        const pedido = {
-            cliente: document.getElementById("cliente").value,
-            producto: document.getElementById("producto").value,
-            cantidad: Number(document.getElementById("cantidad").value),
-            modalidadEntrega:
-                document.getElementById("modalidadEntrega").value
-        };
+    const mensajeRegistro =
+        document.getElementById("mensajeRegistro");
 
-        try {
-            const respuesta = await fetch("/api/pedidos", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(pedido)
-            });
+    const resultadoInventario =
+        document.getElementById("resultadoInventario");
 
-            const datos = await respuesta.json();
+    formPedido.addEventListener(
+        "submit",
+        async function (event) {
 
-            mensajeRegistro.textContent =
-                datos.mensaje || "Pedido registrado correctamente.";
+            event.preventDefault();
 
-            if (datos.pedido && datos.pedido.idPedido) {
-                document.getElementById("idPedido").value =
-                    datos.pedido.idPedido;
+            const cliente =
+                document.getElementById("cliente")
+                    .value
+                    .trim();
+
+            const producto =
+                document.getElementById("producto")
+                    .value
+                    .trim();
+
+            const cantidad =
+                Number(
+                    document.getElementById("cantidad")
+                        .value
+                );
+
+            if (!cliente || !producto || cantidad < 1) {
+                mensajeRegistro.textContent =
+                    "Completa correctamente todos los campos.";
+
+                return;
             }
 
-            resultado.textContent =
-                JSON.stringify(datos, null, 2);
+            const pedido = {
+                cliente: cliente,
+                producto: producto,
+                cantidad: cantidad,
+                modalidadEntrega:
+                    document.getElementById(
+                        "modalidadEntrega"
+                    ).value
+            };
 
-        } catch (error) {
-            mensajeRegistro.textContent =
-                "No fue posible registrar el pedido.";
+            try {
+                const respuesta =
+                    await fetch("/api/pedidos", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify(pedido)
+                    });
 
-            resultado.textContent =
-                "Error de conexión con la API.";
+                const datos = await respuesta.json();
+
+                mensajeRegistro.textContent =
+                    datos.mensaje
+                    || "Pedido registrado correctamente.";
+
+                if (datos.pedido
+                        && datos.pedido.idPedido) {
+
+                    document.getElementById(
+                        "idPedido"
+                    ).value = datos.pedido.idPedido;
+                }
+
+                resultado.textContent =
+                    JSON.stringify(datos, null, 2);
+
+            } catch (error) {
+                mensajeRegistro.textContent =
+                    "No fue posible registrar el pedido.";
+
+                resultado.textContent =
+                    "Error de conexión con la API.";
+            }
         }
-    });
+    );
 
     async function consultarPedido() {
         const idPedido = obtenerIdPedido();
@@ -354,7 +470,8 @@
                 {
                     method: "PUT",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type":
+                            "application/json"
                     }
                 }
             );
@@ -371,17 +488,110 @@
     }
 
     function obtenerIdPedido() {
-        const idPedido =
-            document.getElementById("idPedido").value;
+        const idPedido = Number(
+            document.getElementById("idPedido").value
+        );
 
-        if (!idPedido) {
+        if (!Number.isInteger(idPedido)
+                || idPedido < 1) {
+
             resultado.textContent =
-                "Ingresa el ID del pedido.";
+                "Ingresa un ID de pedido válido.";
 
             return null;
         }
 
         return idPedido;
+    }
+
+    async function consultarInventario() {
+        const productoId = obtenerProductoId();
+
+        if (!productoId) {
+            return;
+        }
+
+        try {
+            const respuesta = await fetch(
+                `/api/inventario/${productoId}`
+            );
+
+            const datos = await respuesta.json();
+
+            resultadoInventario.textContent =
+                JSON.stringify(datos, null, 2);
+
+        } catch (error) {
+            resultadoInventario.textContent =
+                "No fue posible consultar el inventario.";
+        }
+    }
+
+    async function descontarInventario() {
+        const productoId = obtenerProductoId();
+
+        const cantidad = Number(
+            document.getElementById(
+                "cantidadInventario"
+            ).value
+        );
+
+        if (!productoId) {
+            return;
+        }
+
+        if (!Number.isInteger(cantidad)
+                || cantidad < 1) {
+
+            resultadoInventario.textContent =
+                "Ingresa una cantidad válida.";
+
+            return;
+        }
+
+        try {
+            const respuesta = await fetch(
+                `/api/inventario/${productoId}/descontar`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        cantidad: cantidad
+                    })
+                }
+            );
+
+            const datos = await respuesta.json();
+
+            resultadoInventario.textContent =
+                JSON.stringify(datos, null, 2);
+
+        } catch (error) {
+            resultadoInventario.textContent =
+                "No fue posible actualizar el inventario.";
+        }
+    }
+
+    function obtenerProductoId() {
+        const productoId = Number(
+            document.getElementById(
+                "productoIdInventario"
+            ).value
+        );
+
+        if (!Number.isInteger(productoId)
+                || productoId < 1) {
+
+            resultadoInventario.textContent =
+                "Ingresa un ID de producto válido.";
+
+            return null;
+        }
+
+        return productoId;
     }
 </script>
 
