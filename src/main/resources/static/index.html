@@ -3,597 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Mapuescuela - Gestión de pedidos</title>
-
+    <title>Mapuescuela | Gestión de pedidos</title>
     <style>
-        * {
-            box-sizing: border-box;
+        :root {
+            --verde: #1f603d;
+            --verde-oscuro: #17472e;
+            --verde-suave: #eaf4ee;
+            --texto: #1f2d25;
+            --gris: #66736b;
+            --borde: #dce5df;
+            --fondo: #f3f7f4;
+            --blanco: #ffffff;
+            --naranja: #b85d25;
+            --rojo: #b33d3d;
+            --sombra: 0 10px 28px rgba(25, 68, 43, .09);
         }
+
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f6f4;
-            color: #24332a;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
         }
 
         header {
-            background: #245c3b;
+            background: linear-gradient(135deg, var(--verde-oscuro), var(--verde));
             color: white;
-            padding: 24px;
+            padding: 34px 20px;
             text-align: center;
         }
 
-        header h1 {
-            margin: 0 0 8px;
-        }
+        header h1 { margin: 0 0 8px; font-size: clamp(30px, 5vw, 44px); }
+        header p { margin: 0; opacity: .9; }
 
         main {
-            width: min(950px, 92%);
-            margin: 30px auto;
+            width: min(1100px, 92%);
+            margin: 28px auto 50px;
             display: grid;
-            gap: 24px;
+            gap: 22px;
         }
 
         .tarjeta {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            background: var(--blanco);
+            padding: clamp(20px, 4vw, 30px);
+            border: 1px solid var(--borde);
+            border-radius: 16px;
+            box-shadow: var(--sombra);
         }
 
-        h2 {
-            margin-top: 0;
-            color: #245c3b;
+        .encabezado-seccion {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 16px;
+            margin-bottom: 22px;
         }
+
+        h2 { margin: 0 0 6px; color: var(--verde); }
+        .ayuda { margin: 0; color: var(--gris); font-size: 14px; }
 
         .formulario {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
+            gap: 17px;
         }
 
-        .campo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .campo { display: flex; flex-direction: column; gap: 7px; }
+        .campo-completo { grid-column: 1 / -1; }
+        label { font-weight: 700; }
 
-        .campo-completo {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input,
-        select {
+        input, select {
             width: 100%;
-            padding: 11px;
-            border: 1px solid #b8c5bc;
-            border-radius: 7px;
-            font-size: 15px;
+            padding: 13px 14px;
+            border: 1px solid #b8c8bd;
+            border-radius: 9px;
+            background: white;
+            color: var(--texto);
+            font-size: 16px;
         }
 
-        input:focus,
-        select:focus {
-            outline: 2px solid #79a88a;
-            border-color: #245c3b;
+        input:focus, select:focus {
+            outline: 3px solid rgba(31, 96, 61, .14);
+            border-color: var(--verde);
         }
 
         button {
-            padding: 11px 16px;
-            border: none;
-            border-radius: 7px;
-            background: #245c3b;
+            min-height: 44px;
+            padding: 11px 17px;
+            border: 0;
+            border-radius: 9px;
+            background: var(--verde);
             color: white;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
+            transition: transform .15s, opacity .15s, background .15s;
         }
 
-        button:hover {
-            background: #19442b;
-        }
+        button:hover { background: var(--verde-oscuro); transform: translateY(-1px); }
+        button:disabled { opacity: .55; cursor: wait; transform: none; }
+        .secundario { background: #4c735e; }
+        .advertencia { background: var(--naranja); }
+        .peligro { background: var(--rojo); }
+        .botones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 
-        .botones {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .aviso {
+            display: none;
             margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-weight: 700;
         }
 
-        .secundario {
-            background: #4f6f5b;
+        .aviso.visible { display: block; }
+        .aviso.exito { color: #15502f; background: #e4f5e9; border: 1px solid #b8dfc4; }
+        .aviso.error { color: #812929; background: #fdeaea; border: 1px solid #efbaba; }
+        .aviso.info { color: #4b4a21; background: #fff9dd; border: 1px solid #ebe0a1; }
+
+        .resultado {
+            display: none;
+            margin-top: 20px;
+            overflow: hidden;
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            background: #fbfdfb;
         }
 
-        .advertencia {
-            background: #b05b29;
+        .resultado.visible { display: block; }
+
+        .resultado-titulo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding: 15px 18px;
+            color: var(--verde-oscuro);
+            background: var(--verde-suave);
+            border-bottom: 1px solid var(--borde);
         }
 
-        .peligro {
-            background: #a83b3b;
+        .resultado-titulo h3 { margin: 0; }
+
+        .estado {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--verde);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        pre {
-            margin: 18px 0 0;
-            padding: 16px;
-            background: #eef3ef;
-            border-radius: 8px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            min-height: 80px;
+        .datos {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0;
         }
 
-        .mensaje {
-            margin-top: 14px;
-            font-weight: bold;
-        }
+        .dato { padding: 16px 18px; border-bottom: 1px solid var(--borde); }
+        .dato span { display: block; color: var(--gris); font-size: 13px; margin-bottom: 5px; }
+        .dato strong { overflow-wrap: anywhere; }
 
-        @media (max-width: 650px) {
-            .formulario {
-                grid-template-columns: 1fr;
-            }
+        footer { padding: 0 20px 30px; text-align: center; color: var(--gris); font-size: 13px; }
 
-            .campo-completo {
-                grid-column: auto;
-            }
+        @media (max-width: 720px) {
+            .formulario, .datos { grid-template-columns: 1fr; }
+            .campo-completo { grid-column: auto; }
+            .encabezado-seccion { display: block; }
+            .botones button { width: 100%; }
         }
     </style>
 </head>
-
 <body>
-
 <header>
     <h1>Mapuescuela</h1>
-    <p>Interfaz web para la gestión de pedidos</p>
+    <p>Gestión simple y segura de pedidos e inventario</p>
 </header>
 
 <main>
-
     <section class="tarjeta">
-        <h2>Registrar pedido</h2>
+        <div class="encabezado-seccion">
+            <div>
+                <h2>Registrar pedido</h2>
+                <p class="ayuda">Completa los datos para crear un nuevo pedido.</p>
+            </div>
+        </div>
 
         <form id="formPedido" class="formulario">
-
             <div class="campo">
                 <label for="cliente">Nombre del cliente</label>
-                <input
-                    id="cliente"
-                    type="text"
-                    placeholder="Ingrese nombre del cliente"
-                    required
-                >
+                <input id="cliente" type="text" maxlength="100" placeholder="Ej.: María González" required>
             </div>
-
             <div class="campo">
                 <label for="producto">Producto</label>
-                <input
-                    id="producto"
-                    type="text"
-                    placeholder="Ej.: Kit educativo"
-                    required
-                >
+                <input id="producto" type="text" maxlength="100" placeholder="Ej.: Kit educativo" required>
             </div>
-
             <div class="campo">
                 <label for="cantidad">Cantidad</label>
-                <input
-                    id="cantidad"
-                    type="number"
-                    min="1"
-                    value="1"
-                    required
-                >
+                <input id="cantidad" type="number" min="1" value="1" required>
             </div>
-
             <div class="campo">
-                <label for="modalidadEntrega">
-                    Modalidad de entrega
-                </label>
-
+                <label for="modalidadEntrega">Modalidad de entrega</label>
                 <select id="modalidadEntrega" required>
-                    <option value="RETIRO">Retiro</option>
-                    <option value="DESPACHO">Despacho</option>
+                    <option value="RETIRO">Retiro en tienda</option>
+                    <option value="DESPACHO">Despacho a domicilio</option>
                 </select>
             </div>
-
             <div class="campo-completo">
-                <button type="submit">
-                    Registrar pedido
-                </button>
+                <button id="btnRegistrar" type="submit">Registrar pedido</button>
             </div>
-
         </form>
 
-        <div
-            id="mensajeRegistro"
-            class="mensaje"
-            aria-live="polite"
-        ></div>
+        <div id="mensajeRegistro" class="aviso" role="status"></div>
     </section>
 
     <section class="tarjeta">
-        <h2>Consultar y actualizar pedido</h2>
+        <div class="encabezado-seccion">
+            <div>
+                <h2>Consultar y actualizar pedido</h2>
+                <p class="ayuda">Busca un pedido y registra el avance de su atención.</p>
+            </div>
+        </div>
 
         <div class="campo">
             <label for="idPedido">ID del pedido</label>
-            <input
-                id="idPedido"
-                type="number"
-                min="1"
-                placeholder="Ej.: 1"
-            >
+            <input id="idPedido" type="number" min="1" placeholder="Ej.: 123">
         </div>
 
         <div class="botones">
-            <button
-                type="button"
-                onclick="consultarPedido()"
-            >
-                Consultar
-            </button>
-
-            <button
-                type="button"
-                class="secundario"
-                onclick="actualizarEstado('pago-aprobado')"
-            >
-                Aprobar pago
-            </button>
-
-            <button
-                type="button"
-                class="advertencia"
-                onclick="actualizarEstado('pago-rechazado')"
-            >
-                Rechazar pago
-            </button>
-
-            <button
-                type="button"
-                class="secundario"
-                onclick="actualizarEstado('disponible-retiro')"
-            >
-                Disponible para retiro
-            </button>
-
-            <button
-                type="button"
-                class="secundario"
-                onclick="actualizarEstado('retirado')"
-            >
-                Registrar retiro
-            </button>
-
-            <button
-                type="button"
-                class="secundario"
-                onclick="actualizarEstado('despachado')"
-            >
-                Registrar despacho
-            </button>
-
-            <button
-                type="button"
-                class="peligro"
-                onclick="actualizarEstado('cancelar')"
-            >
-                Cancelar pedido
-            </button>
+            <button type="button" onclick="consultarPedido()">Consultar</button>
+            <button type="button" class="secundario" onclick="actualizarEstado('pago-aprobado')">Aprobar pago</button>
+            <button type="button" class="advertencia" onclick="actualizarEstado('pago-rechazado')">Rechazar pago</button>
+            <button type="button" class="secundario" onclick="actualizarEstado('disponible-retiro')">Disponible para retiro</button>
+            <button type="button" class="secundario" onclick="actualizarEstado('retirado')">Registrar retiro</button>
+            <button type="button" class="secundario" onclick="actualizarEstado('despachado')">Registrar despacho</button>
+            <button type="button" class="peligro" onclick="actualizarEstado('cancelar')">Cancelar pedido</button>
         </div>
 
-        <pre id="resultado" aria-live="polite">Aquí aparecerá la información del pedido.</pre>
+        <div id="mensajePedido" class="aviso" role="status"></div>
+        <div id="resultadoPedido" class="resultado" aria-live="polite"></div>
     </section>
 
     <section class="tarjeta">
-        <h2>Gestionar inventario</h2>
+        <div class="encabezado-seccion">
+            <div>
+                <h2>Gestionar inventario</h2>
+                <p class="ayuda">Consulta existencias y registra las unidades utilizadas.</p>
+            </div>
+        </div>
 
         <div class="formulario">
             <div class="campo">
-                <label for="productoIdInventario">
-                    ID del producto
-                </label>
-
-                <input
-                    id="productoIdInventario"
-                    type="number"
-                    min="1"
-                    value="1"
-                    required
-                >
+                <label for="productoIdInventario">ID del producto</label>
+                <input id="productoIdInventario" type="number" min="1" value="1">
             </div>
-
             <div class="campo">
-                <label for="cantidadInventario">
-                    Cantidad a descontar
-                </label>
-
-                <input
-                    id="cantidadInventario"
-                    type="number"
-                    min="1"
-                    value="1"
-                    required
-                >
+                <label for="cantidadDescontar">Cantidad a descontar</label>
+                <input id="cantidadDescontar" type="number" min="1" value="1">
             </div>
         </div>
 
         <div class="botones">
-            <button
-                type="button"
-                onclick="consultarInventario()"
-            >
-                Consultar stock
-            </button>
-
-            <button
-                type="button"
-                class="secundario"
-                onclick="descontarInventario()"
-            >
-                Descontar stock
-            </button>
+            <button type="button" onclick="consultarStock()">Consultar stock</button>
+            <button type="button" class="secundario" onclick="descontarStock()">Descontar stock</button>
         </div>
 
-        <pre
-            id="resultadoInventario"
-            aria-live="polite"
-        >Aquí aparecerá la información del inventario.</pre>
+        <div id="mensajeInventario" class="aviso" role="status"></div>
+        <div id="resultadoInventario" class="resultado" aria-live="polite"></div>
     </section>
-
 </main>
 
+<footer>Mapuescuela · Sistema de gestión de pedidos</footer>
+
 <script>
-    const formPedido =
-        document.getElementById("formPedido");
+    const formPedido = document.getElementById("formPedido");
 
-    const resultado =
-        document.getElementById("resultado");
+    formPedido.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const boton = document.getElementById("btnRegistrar");
+        cambiarCarga(boton, true, "Registrando...");
 
-    const mensajeRegistro =
-        document.getElementById("mensajeRegistro");
-
-    const resultadoInventario =
-        document.getElementById("resultadoInventario");
-
-    formPedido.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
-
-            const cliente =
-                document.getElementById("cliente")
-                    .value
-                    .trim();
-
-            const producto =
-                document.getElementById("producto")
-                    .value
-                    .trim();
-
-            const cantidad =
-                Number(
-                    document.getElementById("cantidad")
-                        .value
-                );
-
-            if (!cliente || !producto || cantidad < 1) {
-                mensajeRegistro.textContent =
-                    "Completa correctamente todos los campos.";
-
-                return;
-            }
-
-            const pedido = {
-                cliente: cliente,
-                producto: producto,
-                cantidad: cantidad,
-                modalidadEntrega:
-                    document.getElementById(
-                        "modalidadEntrega"
-                    ).value
-            };
-
-            try {
-                const respuesta =
-                    await fetch("/api/pedidos", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify(pedido)
-                    });
-
-                const datos = await respuesta.json();
-
-                mensajeRegistro.textContent =
-                    datos.mensaje
-                    || "Pedido registrado correctamente.";
-
-                if (datos.pedido
-                        && datos.pedido.idPedido) {
-
-                    document.getElementById(
-                        "idPedido"
-                    ).value = datos.pedido.idPedido;
-                }
-
-                resultado.textContent =
-                    JSON.stringify(datos, null, 2);
-
-            } catch (error) {
-                mensajeRegistro.textContent =
-                    "No fue posible registrar el pedido.";
-
-                resultado.textContent =
-                    "Error de conexión con la API.";
-            }
-        }
-    );
-
-    async function consultarPedido() {
-        const idPedido = obtenerIdPedido();
-
-        if (!idPedido) {
-            return;
-        }
+        const pedido = {
+            cliente: document.getElementById("cliente").value.trim(),
+            producto: document.getElementById("producto").value.trim(),
+            cantidad: Number(document.getElementById("cantidad").value),
+            modalidadEntrega: document.getElementById("modalidadEntrega").value
+        };
 
         try {
-            const respuesta =
-                await fetch(`/api/pedidos/${idPedido}`);
+            const datos = await solicitar("/api/pedidos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedido)
+            });
 
-            const datos = await respuesta.json();
+            const pedidoCreado = datos.pedido || datos;
+            mostrarAviso("mensajeRegistro", datos.mensaje || "Pedido registrado correctamente.", "exito");
 
-            resultado.textContent =
-                JSON.stringify(datos, null, 2);
+            if (pedidoCreado.idPedido) {
+                document.getElementById("idPedido").value = pedidoCreado.idPedido;
+                mostrarPedido(pedidoCreado);
+            }
 
+            formPedido.reset();
+            document.getElementById("cantidad").value = 1;
         } catch (error) {
-            resultado.textContent =
-                "No fue posible consultar el pedido.";
+            mostrarAviso("mensajeRegistro", error.message, "error");
+        } finally {
+            cambiarCarga(boton, false, "Registrar pedido");
+        }
+    });
+
+    async function consultarPedido() {
+        const id = obtenerEntero("idPedido", "Ingresa un ID de pedido válido.", "mensajePedido");
+        if (!id) return;
+
+        try {
+            const datos = await solicitar(`/api/pedidos/${id}`);
+            const pedido = datos.pedido || datos;
+            mostrarPedido(pedido);
+            mostrarAviso("mensajePedido", datos.mensaje || "Pedido encontrado.", "exito");
+        } catch (error) {
+            ocultar("resultadoPedido");
+            mostrarAviso("mensajePedido", error.message, "error");
         }
     }
 
     async function actualizarEstado(accion) {
-        const idPedido = obtenerIdPedido();
+        const id = obtenerEntero("idPedido", "Ingresa primero el ID del pedido.", "mensajePedido");
+        if (!id) return;
 
-        if (!idPedido) {
-            return;
-        }
+        if (accion === "cancelar" && !confirm("¿Deseas cancelar este pedido?")) return;
 
         try {
-            const respuesta = await fetch(
-                `/api/pedidos/${idPedido}/${accion}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
-
-            const datos = await respuesta.json();
-
-            resultado.textContent =
-                JSON.stringify(datos, null, 2);
-
+            const datos = await solicitar(`/api/pedidos/${id}/${accion}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" }
+            });
+            mostrarPedido(datos.pedido || datos);
+            mostrarAviso("mensajePedido", datos.mensaje || "Pedido actualizado correctamente.", "exito");
         } catch (error) {
-            resultado.textContent =
-                "No fue posible actualizar el pedido.";
+            mostrarAviso("mensajePedido", error.message, "error");
         }
     }
 
-    function obtenerIdPedido() {
-        const idPedido = Number(
-            document.getElementById("idPedido").value
-        );
+    async function consultarStock() {
+        const id = obtenerEntero("productoIdInventario", "Ingresa un ID de producto válido.", "mensajeInventario");
+        if (!id) return;
 
-        if (!Number.isInteger(idPedido)
-                || idPedido < 1) {
+        try {
+            const datos = await solicitar(`/api/inventario/${id}`);
+            mostrarInventario(datos);
+            mostrarAviso("mensajeInventario", "Stock consultado correctamente.", "exito");
+        } catch (error) {
+            ocultar("resultadoInventario");
+            mostrarAviso("mensajeInventario", error.message, "error");
+        }
+    }
 
-            resultado.textContent =
-                "Ingresa un ID de pedido válido.";
+    async function descontarStock() {
+        const id = obtenerEntero("productoIdInventario", "Ingresa un ID de producto válido.", "mensajeInventario");
+        const cantidad = obtenerEntero("cantidadDescontar", "Ingresa una cantidad mayor que cero.", "mensajeInventario");
+        if (!id || !cantidad) return;
 
+        try {
+            const datos = await solicitar(`/api/inventario/${id}/descontar`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cantidad })
+            });
+            mostrarInventario(datos);
+            const tipo = /insuficiente|mayor a cero/i.test(datos.mensaje || "") ? "info" : "exito";
+            mostrarAviso("mensajeInventario", datos.mensaje || "Inventario actualizado.", tipo);
+        } catch (error) {
+            mostrarAviso("mensajeInventario", error.message, "error");
+        }
+    }
+
+    async function solicitar(url, opciones = {}) {
+        let respuesta;
+        try {
+            respuesta = await fetch(url, opciones);
+        } catch (_) {
+            throw new Error("No fue posible conectar con el servidor. Verifica que la aplicación esté iniciada.");
+        }
+
+        const texto = await respuesta.text();
+        let datos = {};
+        if (texto) {
+            try { datos = JSON.parse(texto); }
+            catch (_) { datos = { mensaje: texto }; }
+        }
+
+        if (!respuesta.ok) {
+            throw new Error(datos.mensaje || `La solicitud no pudo completarse (${respuesta.status}).`);
+        }
+        return datos;
+    }
+
+    function mostrarPedido(pedido) {
+        if (!pedido || !pedido.idPedido) return;
+        const contenedor = document.getElementById("resultadoPedido");
+        contenedor.innerHTML = `
+            <div class="resultado-titulo">
+                <h3>Pedido N.º ${escapar(pedido.idPedido)}</h3>
+                <span class="estado">${escapar(etiquetaEstado(pedido.estado))}</span>
+            </div>
+            <div class="datos">
+                ${dato("Cliente", pedido.cliente)}
+                ${dato("Producto", pedido.producto)}
+                ${dato("Cantidad", pedido.cantidad)}
+                ${dato("Entrega", etiquetaEntrega(pedido.modalidadEntrega))}
+                ${dato("Estado", etiquetaEstado(pedido.estado))}
+            </div>`;
+        contenedor.classList.add("visible");
+    }
+
+    function mostrarInventario(datos) {
+        const contenedor = document.getElementById("resultadoInventario");
+        contenedor.innerHTML = `
+            <div class="resultado-titulo"><h3>Producto ${escapar(datos.productoId)}</h3></div>
+            <div class="datos">
+                ${dato("Stock disponible", datos.stockDisponible)}
+                ${datos.cantidadDescontada !== undefined ? dato("Cantidad descontada", datos.cantidadDescontada) : ""}
+            </div>`;
+        contenedor.classList.add("visible");
+    }
+
+    function dato(nombre, valor) {
+        return `<div class="dato"><span>${escapar(nombre)}</span><strong>${escapar(valor ?? "Sin información")}</strong></div>`;
+    }
+
+    function etiquetaEstado(estado) {
+        const estados = {
+            PENDIENTE: "Pendiente",
+            PAGO_APROBADO: "Pago aprobado",
+            PAGO_RECHAZADO: "Pago rechazado",
+            DISPONIBLE_RETIRO: "Disponible para retiro",
+            RETIRADO: "Retirado",
+            DESPACHADO: "Despachado",
+            CANCELADO: "Cancelado"
+        };
+        return estados[estado] || String(estado || "Sin estado").replaceAll("_", " ");
+    }
+
+    function etiquetaEntrega(valor) {
+        return valor === "RETIRO" ? "Retiro en tienda" : valor === "DESPACHO" ? "Despacho a domicilio" : valor;
+    }
+
+    function mostrarAviso(id, mensaje, tipo) {
+        const elemento = document.getElementById(id);
+        elemento.textContent = mensaje;
+        elemento.className = `aviso visible ${tipo}`;
+    }
+
+    function obtenerEntero(id, mensaje, avisoId) {
+        const valor = Number(document.getElementById(id).value);
+        if (!Number.isInteger(valor) || valor < 1) {
+            mostrarAviso(avisoId, mensaje, "info");
             return null;
         }
-
-        return idPedido;
+        return valor;
     }
 
-    async function consultarInventario() {
-        const productoId = obtenerProductoId();
-
-        if (!productoId) {
-            return;
-        }
-
-        try {
-            const respuesta = await fetch(
-                `/api/inventario/${productoId}`
-            );
-
-            const datos = await respuesta.json();
-
-            resultadoInventario.textContent =
-                JSON.stringify(datos, null, 2);
-
-        } catch (error) {
-            resultadoInventario.textContent =
-                "No fue posible consultar el inventario.";
-        }
+    function cambiarCarga(boton, cargando, texto) {
+        boton.disabled = cargando;
+        boton.textContent = texto;
     }
 
-    async function descontarInventario() {
-        const productoId = obtenerProductoId();
+    function ocultar(id) { document.getElementById(id).classList.remove("visible"); }
 
-        const cantidad = Number(
-            document.getElementById(
-                "cantidadInventario"
-            ).value
-        );
-
-        if (!productoId) {
-            return;
-        }
-
-        if (!Number.isInteger(cantidad)
-                || cantidad < 1) {
-
-            resultadoInventario.textContent =
-                "Ingresa una cantidad válida.";
-
-            return;
-        }
-
-        try {
-            const respuesta = await fetch(
-                `/api/inventario/${productoId}/descontar`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body: JSON.stringify({
-                        cantidad: cantidad
-                    })
-                }
-            );
-
-            const datos = await respuesta.json();
-
-            resultadoInventario.textContent =
-                JSON.stringify(datos, null, 2);
-
-        } catch (error) {
-            resultadoInventario.textContent =
-                "No fue posible actualizar el inventario.";
-        }
-    }
-
-    function obtenerProductoId() {
-        const productoId = Number(
-            document.getElementById(
-                "productoIdInventario"
-            ).value
-        );
-
-        if (!Number.isInteger(productoId)
-                || productoId < 1) {
-
-            resultadoInventario.textContent =
-                "Ingresa un ID de producto válido.";
-
-            return null;
-        }
-
-        return productoId;
+    function escapar(valor) {
+        return String(valor ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
 </script>
-
 </body>
 </html>
