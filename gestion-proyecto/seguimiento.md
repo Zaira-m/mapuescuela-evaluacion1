@@ -188,4 +188,75 @@ Esta carpeta incluye evidencias de las rutas ejecutadas en Flowable, los resulta
 * Exportación `Mapuescuela.zip`: actualizada.
 La solución queda funcionalmente ampliada y preparada para la revisión final de la Evaluación 3.
 
+# Etapa 4 – Examen Final
 
+## Estado y seguimiento del Examen Final
+
+El Examen Final corresponde a la consolidación de la solución desarrollada progresivamente durante las evaluaciones anteriores. El trabajo se realizó de manera individual, manteniendo la continuidad del proyecto Mapuescuela y conservando las versiones anteriores mediante los tags `entrega-1`, `entrega-2` y `entrega-3`.
+
+### Actividades desarrolladas
+
+* Revisión integral del funcionamiento del MVP Mapuescuela.
+* Validación de la interfaz web conectada con la API REST.
+* Verificación del registro y consulta de pedidos.
+* Validación de la actualización de estados de los pedidos.
+* Verificación de la gestión y persistencia del inventario.
+* Revisión del proceso BPMN final implementado en Flowable.
+* Verificación de instancias completadas del proceso.
+* Revisión de la integración entre Flowable, External Workers y servicios REST.
+* Verificación de la persistencia mediante Spring Data JPA y base de datos H2.
+* Revisión y actualización de la documentación del repositorio.
+* Preparación de la demostración funcional orientada a la emprendedora.
+* Preparación de la sustentación técnica del proyecto.
+* Consolidación de las evidencias finales del desarrollo.
+
+### Validación funcional final
+
+Durante la revisión final se comprobó desde la interfaz web el siguiente recorrido:
+
+1. Registro de un nuevo pedido.
+2. Consulta del pedido mediante su identificador.
+3. Aprobación del pago.
+4. Actualización del pedido como disponible para retiro.
+5. Registro del retiro del pedido.
+6. Consulta del inventario.
+7. Descuento de unidades y actualización del stock.
+
+Se verificó que las operaciones fueran procesadas correctamente por la API y que los cambios realizados permanecieran almacenados mediante la persistencia implementada.
+
+### Integración técnica
+
+La solución final integra los siguientes componentes:
+
+* Interfaz web desarrollada mediante HTML, CSS y JavaScript.
+* Backend desarrollado en Java y Spring Boot.
+* Servicios REST para pedidos e inventario.
+* Persistencia mediante Spring Data JPA y H2.
+* Proceso BPMN implementado en Flowable.
+* External Workers para la comunicación entre Flowable y la API REST.
+* Repositorio GitHub para control de versiones, documentación y evidencias.
+
+### Evidencia audiovisual
+
+Para la presentación final se prepararon dos tipos de evidencia:
+
+* Video demostrativo orientado a la emprendedora, mostrando de manera simple el uso real de la plataforma.
+* Video de sustentación técnica, mostrando la arquitectura de la solución, BPMN, ejecución en Flowable, servicios REST, External Workers, persistencia, uso de IA, desafíos técnicos y repositorio del proyecto.
+
+### Estado final
+
+* MVP Mapuescuela: funcional.
+* Interfaz web: operativa y conectada con la API REST.
+* Gestión de pedidos: validada.
+* Gestión de inventario: validada.
+* Persistencia de datos: operativa.
+* BPMN final: implementado en Flowable.
+* Integración Flowable–External Workers–API REST: operativa.
+* Ejecución completa del proceso: verificada.
+* Documentación del proyecto: actualizada.
+* Evidencias finales: preparadas.
+* Video para la emprendedora: completado.
+* Sustentación técnica para el profesor: completada.
+* Repositorio GitHub: preparado para cierre del examen.
+
+El proyecto Mapuescuela queda consolidado como un MVP funcional que integra interfaz web, servicios REST, persistencia de datos y automatización del proceso de negocio mediante BPMN y Flowable.
